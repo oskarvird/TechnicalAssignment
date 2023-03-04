@@ -1,4 +1,6 @@
 using ConsidTechnicalBackend.Database;
+using ConsidTechnicalBackend.Repositories;
+using ConsidTechnicalBackend.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,10 +13,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //builder.Services.AddAutoMapper(typeof(<name-of-profile>));
-//TODO: ADD CONNECTION STRING TO LOCALHOST
 
 builder.Services.AddDbContext<ConsidContext>(
             options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
+
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ILibraryItemRepository, LibraryItemRepository>();
 
 var app = builder.Build();
 

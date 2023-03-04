@@ -6,10 +6,10 @@ namespace ConsidTechnicalBackend.Database
     //TODO: RENAME?
     public class ConsidContext : DbContext
     {
-        public ConsidContext(DbContextOptions<ConsidContext> options) : base(options)
-        {
+        //public ConsidContext(DbContextOptions<ConsidContext> options) : base(options)
+        //{
 
-        }
+        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
