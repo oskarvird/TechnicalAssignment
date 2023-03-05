@@ -35,13 +35,13 @@ public class CategoryService : ICategoryService
         }
         else
         {
-            var category = _mapper.Map<DbCategory>(categoryName);
+            var category = _mapper.Map<DbCategory>(categoryName); //Map because we dont want to the obeject to go directly to the database, could be harmfull
 
             await _categoryRepository.Create(category);
             return true;
         }
     }
-    public async Task<bool> UpdateCategoryAsync(EditCategoryRequest editCategoryRequest)
+    public async Task<bool> UpdateCategoryAsync(UpdateCategoryRequest editCategoryRequest)
     {
         if (await _categoryRepository.Exists(editCategoryRequest.CurrentCategoryName))
         {
@@ -51,7 +51,7 @@ public class CategoryService : ICategoryService
         {
             try
             {
-                await _categoryRepository.Update(editCategoryRequest.CurrentCategoryName, editCategoryRequest.NewCategoryName);
+                await _categoryRepository.Update(editCategoryRequest.CurrentCategoryName, editCategoryRequest.NewCategoryName); //TODO: Map?
                 return true;
             }
             catch (Exception)
@@ -73,10 +73,13 @@ public class CategoryService : ICategoryService
 
             var libraryItems = await _libraryItemRepository.GetAllByCategoryId(category.Id);
 
-            if (libraryItems.Count <= 0)
+            if (!libraryItems.IsNullOrEmpty())
             {
-                _categoryRepository.Delete(categoryName);
+                return false;
             }
+
+            await _categoryRepository.Delete(categoryName);
+            return true;
         }
     }
 }

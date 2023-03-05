@@ -20,7 +20,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost("create")]
-    public async Task<ActionResult> CreateCategory([FromQuery] string categoryName)
+    public async Task<ActionResult> CreateCategory([FromQuery] string categoryName) // using FromQueary because only one imparameter
     {
         if (await _categoryService.CreateCategoryAsync(categoryName))
         {
@@ -33,7 +33,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPut("update")]
-    public async Task<ActionResult> UpdateCategory([FromBody] EditCategoryRequest editCategoryRequest)
+    public async Task<ActionResult> UpdateCategory([FromBody] UpdateCategoryRequest editCategoryRequest)
     {
 
         if (await _categoryService.UpdateCategoryAsync(editCategoryRequest))
@@ -49,7 +49,13 @@ public class CategoryController : ControllerBase
     [HttpPut("delete")]
     public async Task<ActionResult> DeleteCategory([FromQuery] string categoryName)
     {
-
-       
+        if (await _categoryService.DeleteCategoryAsync(categoryName))
+        {
+            return BadRequest("Category was not found");
+        }
+        else
+        {
+            return Ok();
+        }
     }
 }
