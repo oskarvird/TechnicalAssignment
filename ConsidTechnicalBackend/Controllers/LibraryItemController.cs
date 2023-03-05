@@ -9,18 +9,27 @@ namespace ConsidTechnicalBackend.Controllers;
 [ApiController]
 public class LibraryItemController : ControllerBase
 {
-    private readonly ICategoryService _categoryService;
+    private readonly ILibraryItemService _libraryItemService;
     public LibraryItemController(
-        ICategoryService categoryService
+        ILibraryItemService libraryItemService
         )
     {
-        _categoryService = categoryService;
+        _libraryItemService = libraryItemService;
     }
 
     [HttpPost("create")]
     public async Task<ActionResult> CreateLibraryItem([FromQuery] CreateLibraryItemRequest request)
     {
+        await _libraryItemService.CreateLibraryItemAsync(request);
+        return Ok();
+    }
 
-            return Ok();
+    [HttpPut("update")]
+    public async Task<ActionResult> UpdateLibraryItem([FromBody] UpdateLibraryItemRequest UpdateLibraryItemRequest)
+    {
+
+
+        return Ok();
+
     }
 }
