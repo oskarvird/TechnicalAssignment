@@ -35,11 +35,23 @@ public class LibraryItemRepository : ILibraryItemRepository
             return await context.LibraryItems.AnyAsync(x => x.Title == title);
         }
     }
-    public async Task<bool> Update(DbLibraryItem libraryItem)
+    public async Task Update(DbLibraryItem libraryItem)
     {
         using (ConsidContext context = new ConsidContext())
         {
-            return await context.LibraryItems.AnyAsync(x => x.Title == title);
+            context.LibraryItems.Update(libraryItem);
+            await context.SaveChangesAsync();
+        }
+    }
+
+    public async Task Delete(string title)
+    {
+        using (ConsidContext context = new ConsidContext())
+        {
+            var entity = await context.LibraryItems.FirstAsync(x => x.Title == title);
+
+            context.LibraryItems.Remove(entity);
+            await context.SaveChangesAsync();
         }
     }
 }

@@ -31,23 +31,19 @@ public class CategoryService : ICategoryService
     {
         if (await _categoryRepository.Exists(categoryName))
         {
-            return false;
-        }
-        else
-        {
             var category = _mapper.Map<DbCategory>(categoryName); //Map because we dont want to the obeject to go directly to the database, could be harmfull
 
             await _categoryRepository.Create(category);
             return true;
         }
+        else
+        {
+            return false;
+        }
     }
     public async Task<bool> UpdateCategoryAsync(UpdateCategoryRequest editCategoryRequest)
     {
         if (await _categoryRepository.Exists(editCategoryRequest.CurrentCategoryName))
-        {
-            return false;
-        }
-        else
         {
             try
             {
@@ -56,18 +52,17 @@ public class CategoryService : ICategoryService
             }
             catch (Exception)
             {
-
                 throw new BadHttpRequestException("Category not updated");
             }
+        }
+        else
+        {
+            return false;
         }
     }
     public async Task<bool> DeleteCategoryAsync(string categoryName)
     {
         if (await _categoryRepository.Exists(categoryName))
-        {
-            return false;
-        }
-        else
         {
             var category = await _categoryRepository.Get(categoryName);
 
@@ -80,6 +75,11 @@ public class CategoryService : ICategoryService
 
             await _categoryRepository.Delete(categoryName);
             return true;
+
+        }
+        else
+        {
+            return false;
         }
     }
 }
