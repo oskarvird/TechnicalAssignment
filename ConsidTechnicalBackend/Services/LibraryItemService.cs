@@ -47,7 +47,7 @@ public class LibraryItemService : ILibraryItemService
 
 
                 //TODO: should handle checkout aswell
-
+                //TODO: maybe check in aswell
 
 
                 var libraryItem = await _libraryItemRepository.Get(request.Title);
