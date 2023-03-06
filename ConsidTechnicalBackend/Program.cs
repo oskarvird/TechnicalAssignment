@@ -18,6 +18,8 @@ builder.Services.AddDbContext<ConsidContext>(
             options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ILibraryItemService, LibraryItemService>();
+
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ILibraryItemRepository, LibraryItemRepository>();

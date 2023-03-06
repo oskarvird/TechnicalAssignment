@@ -24,11 +24,12 @@ public class CategoryController : ControllerBase
     {
         if (await _categoryService.CreateCategoryAsync(categoryName))
         {
-            return BadRequest("Category already exists");
+            return Ok();
         }
         else
         {
-            return Ok();
+
+            return BadRequest("Category already exists");
         }
     }
 
@@ -38,11 +39,11 @@ public class CategoryController : ControllerBase
 
         if (await _categoryService.UpdateCategoryAsync(editCategoryRequest))
         {
-            return BadRequest("Category was not found");
+            return Ok();
         }
         else
         {
-            return Ok();
+            return BadRequest("Category was not found");
         }
     }
 
@@ -51,11 +52,11 @@ public class CategoryController : ControllerBase
     {
         if (await _categoryService.DeleteCategoryAsync(categoryName))
         {
-            return BadRequest("Category was not found");
+            return Ok();
         }
         else
         {
-            return Ok();
+            return BadRequest("Category was not found");
         }
     }
 }
