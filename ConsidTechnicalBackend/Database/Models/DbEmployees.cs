@@ -15,7 +15,6 @@ public class DbEmployees
     public string LastName { get; set; }
 
     [Required]
-    //TODO: SMART PROP OR CLASS WITH calculations? limit decimals 
     public decimal Salary { get; set; }
 
     [Required]
