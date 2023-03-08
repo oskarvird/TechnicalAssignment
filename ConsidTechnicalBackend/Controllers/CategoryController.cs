@@ -18,9 +18,9 @@ public class CategoryController : ControllerBase
     {
         _categoryService = categoryService;
     }
-
+    //TODO: Id should be useed insted of title
     [HttpPost("create")]
-    public async Task<ActionResult> CreateCategory([FromQuery] string categoryName) // using FromQueary because only one imparameter
+    public async Task<ActionResult> CreateCategory([FromQuery] string categoryName) // using FromQuery because only one imparameter
     {
         if (await _categoryService.CreateCategoryAsync(categoryName))
         {

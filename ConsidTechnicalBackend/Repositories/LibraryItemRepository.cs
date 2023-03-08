@@ -6,7 +6,7 @@ namespace ConsidTechnicalBackend.Repositories;
 
 public class LibraryItemRepository : ILibraryItemRepository
 {
-    public async Task Create(DbLibraryItem libraryItem)
+    public async Task Add(DbLibraryItem libraryItem)
     {
         using (ConsidContext context = new ConsidContext())
         {

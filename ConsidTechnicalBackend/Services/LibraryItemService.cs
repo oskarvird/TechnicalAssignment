@@ -27,7 +27,7 @@ public class LibraryItemService : ILibraryItemService
         }
         var newLibraryItem = _mapper.Map<DbLibraryItem>(request);
 
-        await _libraryItemRepository.Create(newLibraryItem);
+        await _libraryItemRepository.Add(newLibraryItem);
     }
     public async Task<bool> UpdateLibraryItemAsync(UpdateLibraryItemRequest request)
     {

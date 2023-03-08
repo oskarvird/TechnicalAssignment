@@ -33,7 +33,7 @@ public class CategoryService : ICategoryService
         {
             var category = _mapper.Map<DbCategory>(categoryName); //Map because we dont want to the obeject to go directly to the database, could be harmfull
 
-            await _categoryRepository.Create(category);
+            await _categoryRepository.Add(category);
             return true;
         }
         else

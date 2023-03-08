@@ -12,5 +12,8 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.Ignore());
         CreateMap<string, DbLibraryItem>()
             .ForMember(dest => dest.Id, opt => opt.Ignore());
+        CreateMap<CreateEmployeeRequest, DbEmployees>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
+        CreateMap<UpdateEmployeeRequest, DbEmployees>();
     }
 }

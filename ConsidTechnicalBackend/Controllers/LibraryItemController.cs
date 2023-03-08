@@ -17,7 +17,7 @@ public class LibraryItemController : ControllerBase
     {
         _libraryItemService = libraryItemService;
     }
-
+    //TODO: Id should be useed insted of title
     [HttpPost("create")]
     public async Task<ActionResult> CreateLibraryItem([FromQuery] CreateLibraryItemRequest request)
     {
@@ -49,9 +49,9 @@ public class LibraryItemController : ControllerBase
     }
 
     [HttpPut("check-in")]
-    public async Task<ActionResult> CheckInLibraryItem([FromQuery] string title)
+    public async Task<ActionResult> CheckInLibraryItem([FromQuery] int id)
     {
-        if (await _libraryItemService.CheckInLibraryItemAsync(title))
+        if (await _libraryItemService.CheckInLibraryItemAsync({))
         {
             return Ok();
         }
