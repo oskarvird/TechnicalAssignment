@@ -1,4 +1,5 @@
 using ConsidTechnicalBackend.Database;
+using ConsidTechnicalBackend.Helpers;
 using ConsidTechnicalBackend.Repositories;
 using ConsidTechnicalBackend.Services;
 using Microsoft.EntityFrameworkCore;
@@ -19,10 +20,12 @@ builder.Services.AddDbContext<ConsidContext>(
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ILibraryItemService, LibraryItemService>();
-
+builder.Services.AddScoped<IEmployeesService, EmployeesService>();
+builder.Services.AddScoped<ICalculations, Calculations>();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ILibraryItemRepository, LibraryItemRepository>();
+builder.Services.AddScoped<IEmployeesRepository, EmployeesRepository>();
 
 var app = builder.Build();
 
@@ -32,8 +35,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-
 
 app.UseHttpsRedirection();
 
