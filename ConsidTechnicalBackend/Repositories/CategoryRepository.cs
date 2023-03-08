@@ -6,7 +6,7 @@ namespace ConsidTechnicalBackend.Repositories;
 
 public class CategoryRepository : ICategoryRepository
 {
-    public async Task Create(DbCategory category)
+    public async Task Add(DbCategory category)
     {
         using (ConsidContext context = new ConsidContext())
         {
