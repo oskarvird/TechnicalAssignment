@@ -1,85 +1,92 @@
 ﻿using AutoMapper;
-using ConsidTechnicalBackend.Database;
 using ConsidTechnicalBackend.Database.Models;
 using ConsidTechnicalBackend.Models;
 using ConsidTechnicalBackend.Repositories;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ConsidTechnicalBackend.Services;
 
 public class CategoryService : ICategoryService
 {
-    private readonly ConsidContext _context;
     private readonly ICategoryRepository _categoryRepository;
     private readonly ILibraryItemRepository _libraryItemRepository;
     private readonly IMapper _mapper;
     public CategoryService(
-        ConsidContext considContext,
         ICategoryRepository categoryRepository,
         ILibraryItemRepository libraryItemRepository ,
         IMapper mapper
         )
     {
-        _context = considContext;
         _categoryRepository = categoryRepository;
         _libraryItemRepository = libraryItemRepository;
         _mapper = mapper;
     }
-    public async Task<bool> CreateCategoryAsync(string categoryName)
+    public async Task CreateCategoryAsync(string categoryName)
     {
+
         if (await _categoryRepository.Exists(categoryName))
         {
-            var category = _mapper.Map<DbCategory>(categoryName); //Map because we dont want to the obeject to go directly to the database, could be harmfull
+            throw new Exception("Category already exists");
+        }
+
+        try
+        {
+            var category = _mapper.Map<DbCategory>(categoryName); //Map because we dont want the obeject to go directly in to the database
 
             await _categoryRepository.Add(category);
-            return true;
         }
-        else
+        catch (Exception)
         {
-            return false;
+
+            throw new System.Data.DataException("Error occured while accessing the database");
         }
+
     }
-    public async Task<bool> UpdateCategoryAsync(UpdateCategoryRequest editCategoryRequest)
+    public async Task UpdateCategoryAsync(UpdateCategoryRequest editCategoryRequest)
     {
-        if (await _categoryRepository.Exists(editCategoryRequest.CurrentCategoryName))
+        if (await _categoryRepository.Exists(editCategoryRequest.Id))
         {
             try
             {
-                await _categoryRepository.Update(editCategoryRequest.CurrentCategoryName, editCategoryRequest.NewCategoryName); //TODO: Map?
-                return true;
+                var category = _mapper.Map<DbCategory>(editCategoryRequest);
+
+                await _categoryRepository.Update(category);
             }
             catch (Exception)
             {
-                throw new BadHttpRequestException("Category not updated");
+                throw new System.Data.DataException("Error occured while accessing the database, category not updated");
             }
         }
         else
         {
-            return false;
+            throw new  Exception("Category do not exist");
         }
     }
-    public async Task<bool> DeleteCategoryAsync(string categoryName)
+    public async Task DeleteCategoryAsync(int id)
     {
-        if (await _categoryRepository.Exists(categoryName))
+        if (await _categoryRepository.Exists(id))
         {
-            var category = await _categoryRepository.Get(categoryName);
-
-            var libraryItems = await _libraryItemRepository.GetAllByCategoryId(category.Id);
-
-            if (!libraryItems.IsNullOrEmpty())
+            try
             {
-                return false;
+                var category = await _categoryRepository.Get(id);
+                var libraryItems = await _libraryItemRepository.GetAllByCategoryId(category.Id);
+
+                if (!libraryItems.IsNullOrEmpty())
+                {
+                    throw new Exception("Library items connected to the category");
+                }
+
+                await _categoryRepository.Delete(category.Id);
             }
+            catch (Exception)
+            {
 
-            await _categoryRepository.Delete(categoryName);
-            return true;
-
+                throw new System.Data.DataException("Error occured while accessing the database, category not deleted");
+            }
         }
         else
         {
-            return false;
+            throw new Exception("Category do not exist");
         }
     }
 }

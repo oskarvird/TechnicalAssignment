@@ -41,6 +41,23 @@ namespace ConsidTechnicalBackend.Migrations
                         .IsUnique();
 
                     b.ToTable("Category");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryName = "Action"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryName = "Comedy"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryName = "Sci-Fi"
+                        });
                 });
 
             modelBuilder.Entity("ConsidTechnicalBackend.Database.Models.DbEmployees", b =>
@@ -74,9 +91,61 @@ namespace ConsidTechnicalBackend.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("IsCEO")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[IsCEO] = 1");
 
                     b.ToTable("Employees");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            FirstName = "John",
+                            IsCEO = true,
+                            IsManager = false,
+                            LastName = "Doe",
+                            Salary = 50m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            FirstName = "Alex",
+                            IsCEO = false,
+                            IsManager = true,
+                            LastName = "Fernandez",
+                            ManagerId = 1,
+                            Salary = 25m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            FirstName = "Jane",
+                            IsCEO = false,
+                            IsManager = true,
+                            LastName = "Doe",
+                            ManagerId = 2,
+                            Salary = 20m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            FirstName = "Harry",
+                            IsCEO = false,
+                            IsManager = false,
+                            LastName = "Andersson",
+                            ManagerId = 2,
+                            Salary = 12m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            FirstName = "Lucas",
+                            IsCEO = false,
+                            IsManager = false,
+                            LastName = "Swan",
+                            ManagerId = 2,
+                            Salary = 15m
+                        });
                 });
 
             modelBuilder.Entity("ConsidTechnicalBackend.Database.Models.DbLibraryItem", b =>
@@ -88,14 +157,12 @@ namespace ConsidTechnicalBackend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Author")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("BorrowDate")
                         .HasColumnType("date");
 
                     b.Property<string>("Borrower")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CategoryId")
@@ -123,6 +190,46 @@ namespace ConsidTechnicalBackend.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("LibraryItem");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Author = "John Doe",
+                            CategoryId = 1,
+                            IsBorrowable = true,
+                            Pages = 50,
+                            Title = "The Short Man",
+                            Type = "Book"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 1,
+                            IsBorrowable = true,
+                            RunTimeMinutes = 120,
+                            Title = "The Idiot",
+                            Type = "DVD"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 2,
+                            IsBorrowable = true,
+                            RunTimeMinutes = 100,
+                            Title = "The Shark",
+                            Type = "Audio Book"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Author = "Jane Doe",
+                            CategoryId = 3,
+                            IsBorrowable = false,
+                            Pages = 200,
+                            Title = "The cooking book",
+                            Type = "Reference Book"
+                        });
                 });
 
             modelBuilder.Entity("ConsidTechnicalBackend.Database.Models.DbLibraryItem", b =>

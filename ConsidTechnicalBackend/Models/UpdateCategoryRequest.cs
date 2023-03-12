@@ -1,7 +1,7 @@
 ﻿namespace ConsidTechnicalBackend.Models;
 
-public class UpdateCategoryRequest
+public record UpdateCategoryRequest
 {
-    public string CurrentCategoryName { get; set; }
-    public string NewCategoryName { get; set; }
+    public int Id { get; set; }
+    public string CategoryName { get; set; }
 }

@@ -25,14 +25,7 @@ public class EmployeesRepository : IEmployeesRepository
     {
         using (ConsidContext context = new ConsidContext())
         {
-            var employee = await context.Employees.FirstOrDefaultAsync(x => x.Id == id);
-
-            //TODO: if (employee == null)
-            //{
-            //    throw new ArgumentException($"Employee with id {id} not found.");
-            //}
-
-            return employee;
+            return await context.Employees.FirstOrDefaultAsync(x => x.Id == id);
         }
     }
     public async Task<bool> IsManaging(int id)

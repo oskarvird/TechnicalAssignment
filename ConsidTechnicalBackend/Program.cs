@@ -15,13 +15,13 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //builder.Services.AddAutoMapper(typeof(<name-of-profile>));
 
-builder.Services.AddDbContext<ConsidContext>(
-            options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
+//builder.Services.AddDbContext<ConsidContext>(
+//            options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ILibraryItemService, LibraryItemService>();
 builder.Services.AddScoped<IEmployeesService, EmployeesService>();
-builder.Services.AddScoped<ICalculations, Calculations>();
+builder.Services.AddScoped<IHelper, Helper>();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ILibraryItemRepository, LibraryItemRepository>();

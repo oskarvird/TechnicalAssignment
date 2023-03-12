@@ -2,6 +2,7 @@
 using ConsidTechnicalBackend.Database.Models;
 using ConsidTechnicalBackend.Helpers;
 using ConsidTechnicalBackend.Models;
+using ConsidTechnicalBackend.Models.Enums;
 using ConsidTechnicalBackend.Repositories;
 
 namespace ConsidTechnicalBackend.Services;
@@ -10,11 +11,11 @@ public class EmployeesService : IEmployeesService
 {
     private readonly IMapper _mapper;
     private readonly IEmployeesRepository _employeesRepository;
-    private readonly ICalculations _calculations;
+    private readonly IHelper _calculations;
     public EmployeesService(
         IMapper mapper, 
         IEmployeesRepository employeesRepository,
-         ICalculations calculations)
+        IHelper calculations)
     {
         _mapper = mapper;
         _employeesRepository = employeesRepository;
@@ -23,50 +24,63 @@ public class EmployeesService : IEmployeesService
     }
     public async Task CreateEmployeeAsync(CreateEmployeeRequest request)
     {
-        // Map the request to the entity
-        var employee = _mapper.Map<DbEmployees>(request);
-
+        // Check the criterias for management
         if (request.IsCEO)
         {
             if (await _employeesRepository.CEOExists())
-            {
-                throw new InvalidOperationException("CEO already exists");
-            }
+                throw new Exception("CEO already exists");
+
             if (request.IsManager)
-            {
-                throw new InvalidOperationException("CEO cannot be a manager.");
-            }
+                throw new Exception("CEO cannot be a manager.");
+
             if (request.ManagerId.HasValue)
-            {
-                throw new InvalidOperationException("CEO cannot have a manager.");
-            }
+                throw new Exception("CEO cannot have a manager.");
+
         }
-        else if (request.IsManager)
+        else if (request.IsManager )
         {
-            var manager = _employeesRepository.GetById(request.ManagerId.Value).Result;
-            if (manager == null || !manager.IsManager)
+            if (request.ManagerId != null || request.ManagerId != 0)
             {
-                throw new InvalidOperationException("Manager must have a valid manager.");
+                var manager = await _employeesRepository.GetById(request.ManagerId.Value);
+
+                if (manager == null || !manager.IsManager || !manager.IsCEO)
+                    throw new Exception("Manager must have a valid manager/ CEO.");
             }
         }
-        else if(!request.IsManager && !request.IsCEO)
+        else
         {
-            var manager = _employeesRepository.GetById(request.ManagerId.Value).Result;
-            if (manager == null || !manager.IsManager)
+            if (request.ManagerId != null && request.ManagerId != 0)
             {
-                throw new InvalidOperationException("Employee must have a valid manager.");
-            }
-            if (manager.IsCEO)
-            {
-                throw new InvalidOperationException("Employee cannot have CEO as manager.");
+                var manager = await _employeesRepository.GetById(request.ManagerId.Value);
+
+                if (manager == null || !manager.IsManager)
+                {
+                    if (manager.IsCEO)
+                    {
+                        throw new Exception("Employee cannot have CEO as manager.");
+                    }
+
+                    throw new Exception("Employee must have a valid manager.");
+                }
+
             }
         }
-        
-        // Calculate salary after the checks to avoid unecesary ..
+
+        // Map the request to the entity
+        var employee = _mapper.Map<DbEmployees>(request);
+
+        // Calculate salary after the checks to avoid unecesary 
         employee.Salary = _calculations.CalculateSalary(request.IsCEO, request.IsManager, request.Rank);
 
+        try
+        {
+            await _employeesRepository.Add(employee);
+        }
+        catch (Exception)
+        {
 
-        await _employeesRepository.Add(employee);
+            throw new System.Data.DataException("Error occured while accessing the database");
+        }
     }
 
     public async Task DeleteEmployeeAsync(int employeeId)
@@ -75,7 +89,7 @@ public class EmployeesService : IEmployeesService
 
         if (employeeToDelete == null)
         {
-            throw new InvalidOperationException("Employee not found");
+            throw new Exception("Employee not found");
         
         }
         
@@ -83,61 +97,114 @@ public class EmployeesService : IEmployeesService
         {
             if(await _employeesRepository.IsManaging(employeeId))
             {
-                throw new InvalidOperationException("Can not delete if managing");
+                throw new Exception("Can not delete if managing others");
             }
         }
 
-        await _employeesRepository.Delete(employeeToDelete);
+        try
+        {
+            await _employeesRepository.Delete(employeeToDelete);
+        }
+        catch (Exception)
+        {
+
+            throw new System.Data.DataException("Error occured while accessing the database");
+        }
+
     }
-    public async Task UpdateEmployeeAsync(UpdateEmployeeRequest updateEmployeeRequest)
+    public async Task UpdateEmployeeAsync(UpdateEmployeeRequest request)
     {
-        var employee = _mapper.Map<DbEmployees>(updateEmployeeRequest);
+
+        var employee = _mapper.Map<DbEmployees>(request);
+
+        // Calculate salary
+        employee.Salary = _calculations.CalculateSalary(request.IsCEO, request.IsManager, request.Rank);
 
         if (!await _employeesRepository.Exists(employee.Id))
         {
             throw new InvalidOperationException("Employee not found");
         }
 
-        await _employeesRepository.Update(employee);
-
-    }
-    public async Task<EmployeeGetResponse> ListEmployeesAsync()
-    {
-        var employees = await _employeesRepository.GetAll();
-
-        EmployeeGetResponse response = new EmployeeGetResponse(); //Split to three objects/ lists to easily destinct the diffrent roles 
-
-        foreach (var employee in employees)
+        try
         {
-            if(employee.IsCEO)
-            {
-                response.Ceo = new Employee
-                {
-                    FirstName = employee.FirstName,
-                    LastName = employee.LastName,
-                    Salary = employee.Salary,
-                };
-            }
-            else if (employee.IsManager)
-            {
-                response.Managers.Add(new Employee
-                {
-                    FirstName = employee.FirstName,
-                    LastName = employee.LastName,
-                    Salary = employee.Salary,
-                });
-            }
-            else
-            {
-                response.Employees.Add(new Employee
-                {
-                    FirstName = employee.FirstName,
-                    LastName = employee.LastName,
-                    Salary = employee.Salary,
-                });
-            }
+            await _employeesRepository.Update(employee);
+        }
+        catch (Exception)
+        {
+
+            throw new System.Data.DataException("Error occured while accessing the database");
         }
 
-        return response;
+
+    }
+    public async Task<List<EmployeeGetResponse>> ListEmployeesAsync()
+    {
+        try
+        {
+            var employees = await _employeesRepository.GetAll();
+
+            var roles = Enum.GetNames(typeof(Roles));
+
+            var ceoEmployees = employees.Where(x => x.IsCEO).Select(x => new EmployeeResponse
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Salary = x.Salary
+            }).ToList();
+
+            var managerEmployees = employees.Where(x => x.IsManager && !x.IsCEO).Select(x => new EmployeeResponse
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Salary = x.Salary
+            }).ToList();
+
+            var regularEmployees = employees.Where(x => !x.IsManager && !x.IsCEO).Select(x => new EmployeeResponse
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Salary = x.Salary
+            }).ToList();
+
+            var response = new List<EmployeeGetResponse>();
+
+            if (ceoEmployees.Any())
+            {
+                response.Add(new EmployeeGetResponse
+                {
+                    Role = "CEO",
+                    Employees = ceoEmployees
+                });
+            }
+
+            if (managerEmployees.Any())
+            {
+                response.Add(new EmployeeGetResponse
+                {
+                    Role = "Managers",
+                    Employees = managerEmployees
+                });
+            }
+
+            if (regularEmployees.Any())
+            {
+                response.Add(new EmployeeGetResponse
+                {
+                    Role = "Employees",
+                    Employees = regularEmployees
+                });
+            }
+
+            return response;
+        }
+        catch (Exception)
+        {
+
+            throw new System.Data.DataException("Error occured while accessing the database");
+        }
+       
     }
 }

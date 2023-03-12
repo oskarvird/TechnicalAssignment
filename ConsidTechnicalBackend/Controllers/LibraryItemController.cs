@@ -1,7 +1,5 @@
 ﻿using ConsidTechnicalBackend.Services;
 using ConsidTechnicalBackend.Models;
-using ConsidTechnicalBackend.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ConsidTechnicalBackend.Controllers;
@@ -17,9 +15,9 @@ public class LibraryItemController : ControllerBase
     {
         _libraryItemService = libraryItemService;
     }
-    //TODO: Id should be useed insted of title
+
     [HttpPost("create")]
-    public async Task<ActionResult> CreateLibraryItem([FromQuery] CreateLibraryItemRequest request)
+    public async Task<ActionResult> CreateLibraryItem([FromBody] CreateLibraryItemRequest request)
     {
         await _libraryItemService.CreateLibraryItemAsync(request);
         return Ok();
@@ -35,38 +33,30 @@ public class LibraryItemController : ControllerBase
     }
 
     [HttpDelete("delete")]
-    public async Task<ActionResult> DeleteLibraryItem([FromQuery] string title)
+    public async Task<ActionResult> DeleteLibraryItem([FromQuery] int id)
     {
 
-        if (await _libraryItemService.DeleteLibraryItemAsync(title))
-        {
-            return Ok();
-        }
-        else
-        {
-            return BadRequest("Library item not deleted");
-        }
-    }
-
-    [HttpPut("check-in")]
-    public async Task<ActionResult> CheckInLibraryItem([FromQuery] int id)
-    {
-        if (await _libraryItemService.CheckInLibraryItemAsync({))
-        {
-            return Ok();
-        }
-        else
-        {
-            return BadRequest("Category was not found or couldnt be checked in");
-        }
-    }
-
-    [HttpPut("check-out")]
-    public async Task<ActionResult> CheckOutLibraryItem([FromBody] string title)
-    {
-
-        await _libraryItemService.CheckOutLibraryItemAsync(title);
+        await _libraryItemService.DeleteLibraryItemAsync(id);
         return Ok();
 
     }
+    [HttpGet("get-by-categories")]
+    public async Task<ActionResult> GetLibraryItemsByCategories()
+    {
+
+        var response = await _libraryItemService.GetLibraryItemsByCategoriesAsync();
+        return Ok(response);
+
+    }
+
+    [HttpGet("get-by-types")]
+    public async Task<ActionResult> GetLibraryItemsByTypes()
+    {
+
+        var response = await _libraryItemService.GetLibraryItemsByTypesAsync();
+        return Ok(response);
+
+    }
+    // Following KIS(Keep it simple), could have added two specific enpoints one for check in and one for check out, but i include support for this in the UpdateLibraryItem,
+    // I would also build fronend to take care of what types to be sent in, i could have used enums for this. Same with check in and out to be two diffrent buttons that generate diffrent fields
 }

@@ -1,6 +1,6 @@
 ﻿namespace ConsidTechnicalBackend.Models;
 
-public class UpdateEmployeeRequest
+public record UpdateEmployeeRequest
 {
     public int Id { get; set; }
     public string FirstName { get; set; }

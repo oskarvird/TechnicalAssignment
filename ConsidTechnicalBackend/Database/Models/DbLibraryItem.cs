@@ -16,8 +16,7 @@ public class DbLibraryItem
     [Required]
     public string Title { get; set; }
 
-    [Required]
-    public string Author { get; set; }
+    public string? Author { get; set; }
 
     public int? Pages { get; set; }
 
@@ -26,11 +25,10 @@ public class DbLibraryItem
     [Required]
     public bool IsBorrowable { get; set; }
 
-    [Required]
-    public string Borrower { get; set; }
+    public string? Borrower { get; set; }
 
     public DateTime? BorrowDate { get; set; }
 
     [Required]
-    public string Type { get; set; } //TODO: BLIR INT o inte string vill vi ha enums??
+    public string Type { get; set; }
 }

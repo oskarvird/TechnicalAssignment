@@ -10,10 +10,17 @@ public class MappingProfile : Profile
     {
         CreateMap<CreateLibraryItemRequest, DbLibraryItem>()
             .ForMember(dest => dest.Id, opt => opt.Ignore());
-        CreateMap<string, DbLibraryItem>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+        CreateMap<string, DbCategory>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src));
+
         CreateMap<CreateEmployeeRequest, DbEmployees>()
             .ForMember(dest => dest.Id, opt => opt.Ignore());
+
         CreateMap<UpdateEmployeeRequest, DbEmployees>();
+
+        CreateMap< UpdateCategoryRequest, DbCategory>();
+    
     }
 }

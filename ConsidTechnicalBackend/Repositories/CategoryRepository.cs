@@ -14,11 +14,27 @@ public class CategoryRepository : ICategoryRepository
             await context.SaveChangesAsync();
         }
     }
-    public async Task<DbCategory> Get(string name)
+    public async Task<DbCategory> Get(int id)
     {
         using (ConsidContext context = new ConsidContext())
         {
-            return await context.Categories.FirstAsync(x => x.CategoryName == name);
+            return await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+        }
+    }
+    public async Task<List<DbCategory>> GetAll()
+    {
+        using (ConsidContext context = new ConsidContext())
+        {
+            return await context.Categories.ToListAsync();
+        }
+    }
+    public async Task<bool> Exists(int id)
+    {
+        using (ConsidContext context = new ConsidContext())
+        {
+
+            return await context.Categories.AnyAsync(x => x.Id == id);
+
         }
     }
     public async Task<bool> Exists(string name)
@@ -30,22 +46,19 @@ public class CategoryRepository : ICategoryRepository
 
         }
     }
-    public async Task Update(string name, string newName)
+    public async Task Update(DbCategory category)
     {
         using (ConsidContext context = new ConsidContext())
         {
-            var response = await context.Categories.FirstAsync(x => x.CategoryName == name);
-
-            response.CategoryName = newName;
+            context.Categories.Update(category);
             await context.SaveChangesAsync();
         }
     }
-    //TODO: Delete have to keep in mind that it dosent have ant library items referenced
-    public async Task Delete(string name)
+    public async Task Delete(int id)
     {
         using (ConsidContext context = new ConsidContext())
         {
-            var entity = await context.Categories.FirstAsync(x => x.CategoryName == name);
+            var entity = await context.Categories.FirstAsync(x => x.Id == id);
 
             context.Categories.Remove(entity);
             await context.SaveChangesAsync();
