@@ -2,7 +2,7 @@
 
 namespace ConsidTechnicalBackend.Models;
 
-public class CreateEmployeeRequest
+public record CreateEmployeeRequest
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

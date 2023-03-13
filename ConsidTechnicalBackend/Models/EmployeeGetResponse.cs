@@ -1,14 +1,14 @@
 ﻿namespace ConsidTechnicalBackend.Models;
 
-public class EmployeeGetResponse
+public record EmployeeGetResponse
 {
-    public Employee Ceo { get; set; }
-    public List<Employee> Managers { get; set; }
-    public List<Employee> Employees { get; set; }
+    public string Role { get; set; }
+    public List<EmployeeResponse> Employees { get; set; }
 }
 
-public class Employee
+public record EmployeeResponse
 {
+    public int Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public decimal Salary { get; set; }

@@ -4,7 +4,7 @@ namespace ConsidTechnicalBackend.Services;
 
 public interface ICategoryService
 {
-    Task<bool> CreateCategoryAsync(string categoryName);
-    Task<bool> UpdateCategoryAsync(UpdateCategoryRequest editCategoryRequest);
-    Task<bool> DeleteCategoryAsync(string categoryName);
+    Task CreateCategoryAsync(string categoryName);
+    Task UpdateCategoryAsync(UpdateCategoryRequest editCategoryRequest);
+    Task DeleteCategoryAsync(int id);
 }

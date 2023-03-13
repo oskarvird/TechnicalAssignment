@@ -4,10 +4,12 @@ namespace ConsidTechnicalBackend.Repositories
 {
     public interface ICategoryRepository
     {
+        Task<bool> Exists(int id);
         Task<bool> Exists(string name);
         Task Add(DbCategory category);
-        Task Update(string name, string newName);
-        Task Delete(string name);
-        Task<DbCategory> Get(string name);
+        Task Update(DbCategory category);
+        Task Delete(int id);
+        Task<DbCategory> Get(int id);
+        Task<List<DbCategory>> GetAll();
     }
 }

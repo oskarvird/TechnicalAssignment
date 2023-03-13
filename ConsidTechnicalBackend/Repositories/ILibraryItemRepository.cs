@@ -6,8 +6,9 @@ public interface ILibraryItemRepository
 {
     Task Add(DbLibraryItem libraryItem);
     Task<List<DbLibraryItem>> GetAllByCategoryId(int categoryId);
-    Task<bool> Exists(string title);
-    Task<DbLibraryItem> Get(string title);
-    Task Delete(string title);
+    Task<bool> Exists(int id);
+    Task<DbLibraryItem> Get(int id);
+    Task Delete(DbLibraryItem libraryItem);
     Task Update(DbLibraryItem libraryItem);
+    Task<List<DbLibraryItem>> GetAll();
 }
