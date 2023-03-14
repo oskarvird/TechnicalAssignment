@@ -137,6 +137,32 @@ public class EmployeesService : IEmployeesService
 
 
     }
+    public async Task<EmployeeResponse> GetEmployeeAsync(int id)
+    {
+        try
+        {
+            var employee = await _employeesRepository.GetById(id);
+
+            if (employee == null)
+            {
+                throw new InvalidOperationException("Employee not found");
+            }
+
+            var rank = _calculations.CalculateRank(employee.IsCEO, employee.IsManager, employee.Salary);
+
+            var response = _mapper.Map<EmployeeResponse>(employee);
+
+            response.Rank = rank;
+
+            return response;
+
+        }
+        catch (Exception)
+        {
+
+            throw new System.Data.DataException("Error occured while accessing the database");
+        }
+    }
     public async Task<List<EmployeeGetResponse>> ListEmployeesAsync()
     {
         try
@@ -145,7 +171,7 @@ public class EmployeesService : IEmployeesService
 
             var roles = Enum.GetNames(typeof(Roles));
 
-            var ceoEmployees = employees.Where(x => x.IsCEO).Select(x => new EmployeeResponse
+            var ceoEmployees = employees.Where(x => x.IsCEO).Select(x => new Employee
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -153,7 +179,7 @@ public class EmployeesService : IEmployeesService
                 Salary = x.Salary
             }).ToList();
 
-            var managerEmployees = employees.Where(x => x.IsManager && !x.IsCEO).Select(x => new EmployeeResponse
+            var managerEmployees = employees.Where(x => x.IsManager && !x.IsCEO).Select(x => new Employee
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -161,7 +187,7 @@ public class EmployeesService : IEmployeesService
                 Salary = x.Salary
             }).ToList();
 
-            var regularEmployees = employees.Where(x => !x.IsManager && !x.IsCEO).Select(x => new EmployeeResponse
+            var regularEmployees = employees.Where(x => !x.IsManager && !x.IsCEO).Select(x => new Employee
             {
                 Id = x.Id,
                 FirstName = x.FirstName,

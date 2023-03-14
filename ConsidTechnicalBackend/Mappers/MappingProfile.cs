@@ -21,6 +21,7 @@ public class MappingProfile : Profile
         CreateMap<UpdateEmployeeRequest, DbEmployees>();
 
         CreateMap< UpdateCategoryRequest, DbCategory>();
-    
+
+        CreateMap<DbEmployees, EmployeeResponse>();
     }
 }

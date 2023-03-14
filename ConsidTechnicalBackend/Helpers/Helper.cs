@@ -24,6 +24,26 @@ public class Helper : IHelper
 
         return salary;
     }
+    public int CalculateRank(bool isCeo, bool isManager, decimal salary)
+    {
+        int rank = 0;
+        decimal salaryCoefficient = 1.125m;
+
+        if (isCeo)
+        {
+            salaryCoefficient = 2.725m;
+        }
+        else if (isManager)
+        {
+            salaryCoefficient = 1.725m;
+        }
+
+
+        rank = (int)(salary / salaryCoefficient);
+
+
+        return rank;
+    }
     public string AddAcronym(string title)
     {
         string cleanedTitle = new string(title.Where(char.IsLetter).ToArray());
