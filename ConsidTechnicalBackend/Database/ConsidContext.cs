@@ -5,10 +5,6 @@ namespace ConsidTechnicalBackend.Database
 {
     public class ConsidContext : DbContext
     {
-        //public ConsidContext(DbContextOptions<ConsidContext> options) : base(options)
-        //{
-
-        //}
         public ConsidContext()
         {
 
@@ -16,7 +12,6 @@ namespace ConsidTechnicalBackend.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseSqlServer("name=ConnectionStrings:DefaultConnection");
 
             IConfigurationRoot configuration = new ConfigurationBuilder()
                      .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)

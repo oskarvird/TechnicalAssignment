@@ -41,6 +41,15 @@ public class EmployeesController : ControllerBase
 
     }
 
+    [HttpGet("get")]
+    public async Task<ActionResult> GetEmployee([FromQuery] int id)
+    {
+
+        var employee = await _employeesService.GetEmployeeAsync(id);
+        return Ok(employee);
+
+    }
+
     [HttpGet("list")]
     public async Task<ActionResult> ListEmployees()
     {

@@ -13,6 +13,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReact",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:3000")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //builder.Services.AddAutoMapper(typeof(<name-of-profile>));
 
 //builder.Services.AddDbContext<ConsidContext>(
@@ -29,6 +40,8 @@ builder.Services.AddScoped<IEmployeesRepository, EmployeesRepository>();
 
 var app = builder.Build();
 
+app.UseCors("AllowReact");
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -36,7 +49,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
