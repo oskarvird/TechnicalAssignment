@@ -26,8 +26,6 @@ public class Helper : IHelper
     }
     public int CalculateRank(bool isCeo, bool isManager, decimal salary)
     {
-        //TODO: kolla över så det blir rätt
-        //TODO: se över ssl
         int rank = 0;
         decimal salaryCoefficient = 1.125m;
 
