@@ -122,7 +122,7 @@ public class EmployeesService : IEmployeesService
             throw new System.Data.DataException("Error occured while accessing the database");
         }
     }
-    public async Task<List<EmployeeGetResponse>> ListEmployeesAsync()
+    public async Task<List<EmployeeByRoleResponse>> ListEmployeesAsync()
     {
         try
         {
@@ -154,11 +154,11 @@ public class EmployeesService : IEmployeesService
                 Salary = x.Salary
             }).ToList();
 
-            var response = new List<EmployeeGetResponse>();
+            var response = new List<EmployeeByRoleResponse>();
 
             if (ceoEmployees.Any())
             {
-                response.Add(new EmployeeGetResponse
+                response.Add(new EmployeeByRoleResponse
                 {
                     Role = "CEO",
                     Employees = ceoEmployees
@@ -167,7 +167,7 @@ public class EmployeesService : IEmployeesService
 
             if (managerEmployees.Any())
             {
-                response.Add(new EmployeeGetResponse
+                response.Add(new EmployeeByRoleResponse
                 {
                     Role = "Managers",
                     Employees = managerEmployees
@@ -176,7 +176,7 @@ public class EmployeesService : IEmployeesService
 
             if (regularEmployees.Any())
             {
-                response.Add(new EmployeeGetResponse
+                response.Add(new EmployeeByRoleResponse
                 {
                     Role = "Employees",
                     Employees = regularEmployees

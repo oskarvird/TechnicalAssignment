@@ -1,6 +1,6 @@
 ﻿namespace ConsidTechnicalBackend.Models;
 
-public record EmployeeGetResponse
+public record EmployeeByRoleResponse
 {
     public string Role { get; set; }
     public List<Employee> Employees { get; set; }

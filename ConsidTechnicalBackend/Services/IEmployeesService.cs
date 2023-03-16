@@ -7,6 +7,6 @@ public interface IEmployeesService
     Task CreateEmployeeAsync(CreateEmployeeRequest createEmployeeRequest);
     Task DeleteEmployeeAsync(int employeeId);
     Task UpdateEmployeeAsync(UpdateEmployeeRequest updateEmployeeRequest);
-    Task<List<EmployeeGetResponse>> ListEmployeesAsync();
+    Task<List<EmployeeByRoleResponse>> ListEmployeesAsync();
     Task<EmployeeResponse> GetEmployeeAsync(int id);
 }
