@@ -2,6 +2,7 @@
 
 public class Helper : IHelper
 {
+    // All helpers is "business logic" gatherd here, could easily be called anywhere in the code with DI
     public decimal CalculateSalary(bool isCeo, bool isManager, int rank)
     {
         decimal salary = 0m;
