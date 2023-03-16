@@ -86,11 +86,11 @@ namespace ConsidTechnicalBackend.Migrations
                 columns: new[] { "Id", "FirstName", "IsCEO", "IsManager", "LastName", "ManagerId", "Salary" },
                 values: new object[,]
                 {
-                    { 1, "John", true, false, "Doe", null, 50m },
-                    { 2, "Alex", false, true, "Fernandez", 1, 25m },
-                    { 3, "Jane", false, true, "Doe", 2, 20m },
-                    { 4, "Harry", false, false, "Andersson", 2, 12m },
-                    { 5, "Lucas", false, false, "Swan", 2, 15m }
+                    { 1, "John", true, false, "Doe", null, 27.25m },
+                    { 2, "Alex", false, true, "Fernandez", 1, 13.8m },
+                    { 3, "Jane", false, true, "Doe", 2, 8.63m },
+                    { 4, "Harry", false, false, "Andersson", 2, 5.63m },
+                    { 5, "Lucas", false, false, "Swan", 2, 1.125m }
                 });
 
             migrationBuilder.InsertData(

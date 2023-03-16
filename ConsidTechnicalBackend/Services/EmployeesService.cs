@@ -24,47 +24,7 @@ public class EmployeesService : IEmployeesService
     }
     public async Task CreateEmployeeAsync(CreateEmployeeRequest request)
     {
-        // Check the criterias for management
-        if (request.IsCEO)
-        {
-            if (await _employeesRepository.CEOExists())
-                throw new Exception("CEO already exists");
-
-            if (request.IsManager)
-                throw new Exception("CEO cannot be a manager.");
-
-            if (request.ManagerId.HasValue)
-                throw new Exception("CEO cannot have a manager.");
-
-        }
-        else if (request.IsManager )
-        {
-            if (request.ManagerId != null || request.ManagerId != 0)
-            {
-                var manager = await _employeesRepository.GetById(request.ManagerId.Value);
-
-                if (manager == null || !manager.IsManager || !manager.IsCEO)
-                    throw new Exception("Manager must have a valid manager/ CEO.");
-            }
-        }
-        else
-        {
-            if (request.ManagerId != null && request.ManagerId != 0)
-            {
-                var manager = await _employeesRepository.GetById(request.ManagerId.Value);
-
-                if (manager == null || !manager.IsManager)
-                {
-                    if (manager.IsCEO)
-                    {
-                        throw new Exception("Employee cannot have CEO as manager.");
-                    }
-
-                    throw new Exception("Employee must have a valid manager.");
-                }
-
-            }
-        }
+        await ValidateEmployee(request.IsCEO, request.IsManager, request.ManagerId);
 
         // Map the request to the entity
         var employee = _mapper.Map<DbEmployees>(request);
@@ -82,7 +42,6 @@ public class EmployeesService : IEmployeesService
             throw new System.Data.DataException("Error occured while accessing the database");
         }
     }
-
     public async Task DeleteEmployeeAsync(int employeeId)
     {
         var employeeToDelete = await _employeesRepository.GetById(employeeId);
@@ -114,6 +73,7 @@ public class EmployeesService : IEmployeesService
     }
     public async Task UpdateEmployeeAsync(UpdateEmployeeRequest request)
     {
+        await ValidateEmployee(request.IsCEO, request.IsManager, request.ManagerId);
 
         var employee = _mapper.Map<DbEmployees>(request);
 
@@ -134,7 +94,6 @@ public class EmployeesService : IEmployeesService
 
             throw new System.Data.DataException("Error occured while accessing the database");
         }
-
 
     }
     public async Task<EmployeeResponse> GetEmployeeAsync(int id)
@@ -232,5 +191,49 @@ public class EmployeesService : IEmployeesService
             throw new System.Data.DataException("Error occured while accessing the database");
         }
        
+    }
+    private async Task ValidateEmployee(bool isCEO, bool isManager, int? managerId)
+    {
+        // Check the criterias for management
+        if (isCEO)
+        {
+            if (await _employeesRepository.CEOExists())
+                throw new Exception("CEO already exists");
+
+            if (isManager)
+                throw new Exception("CEO cannot be a manager.");
+
+            if (managerId.HasValue)
+                throw new Exception("CEO cannot have a manager.");
+
+        }
+        else if (isManager)
+        {
+            if (managerId != null || managerId != 0)
+            {
+                var manager = await _employeesRepository.GetById(managerId.Value);
+
+                if (manager == null || !manager.IsManager || !manager.IsCEO)
+                    throw new Exception("Manager must have a valid manager/ CEO.");
+            }
+        }
+        else
+        {
+            if (managerId != null && managerId != 0)
+            {
+                var manager = await _employeesRepository.GetById(managerId.Value);
+
+                if (manager == null || !manager.IsManager)
+                {
+                    if (manager.IsCEO)
+                    {
+                        throw new Exception("Employee cannot have CEO as manager.");
+                    }
+
+                    throw new Exception("Employee must have a valid manager.");
+                }
+
+            }
+        }
     }
 }

@@ -117,7 +117,7 @@ namespace ConsidTechnicalBackend.Database
                     LastName = "Doe",
                     IsCEO = true,
                     IsManager = false,
-                    Salary = 50,
+                    Salary = 27.25m,
                 },
                 new DbEmployees
                 {
@@ -126,7 +126,7 @@ namespace ConsidTechnicalBackend.Database
                     LastName = "Fernandez",
                     IsCEO = false,
                     IsManager = true,
-                    Salary = 25,
+                    Salary = 13.8m,
                     ManagerId = 1,
                 },
                  new DbEmployees
@@ -136,7 +136,7 @@ namespace ConsidTechnicalBackend.Database
                      LastName = "Doe",
                      IsCEO = false,
                      IsManager = true,
-                     Salary = 20,
+                     Salary = 8.63m,
                      ManagerId = 2,
                  },
                  new DbEmployees
@@ -146,7 +146,7 @@ namespace ConsidTechnicalBackend.Database
                      LastName = "Andersson",
                      IsCEO = false,
                      IsManager = false,
-                     Salary = 12,
+                     Salary = 5.63m,
                      ManagerId = 2,
                  },
                  new DbEmployees
@@ -156,7 +156,7 @@ namespace ConsidTechnicalBackend.Database
                      LastName = "Swan",
                      IsCEO = false,
                      IsManager = false,
-                     Salary = 15,
+                     Salary = 1.125m,
                      ManagerId = 2,
                  }
             );

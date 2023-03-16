@@ -4,7 +4,6 @@ using ConsidTechnicalBackend.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,11 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ConsidTechnicalBackend.Migrations
 {
     [DbContext(typeof(ConsidContext))]
-    [Migration("20230312093652_Initial")]
-    partial class Initial
+    partial class ConsidContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,7 +104,7 @@ namespace ConsidTechnicalBackend.Migrations
                             IsCEO = true,
                             IsManager = false,
                             LastName = "Doe",
-                            Salary = 50m
+                            Salary = 27.25m
                         },
                         new
                         {
@@ -117,7 +114,7 @@ namespace ConsidTechnicalBackend.Migrations
                             IsManager = true,
                             LastName = "Fernandez",
                             ManagerId = 1,
-                            Salary = 25m
+                            Salary = 13.8m
                         },
                         new
                         {
@@ -127,7 +124,7 @@ namespace ConsidTechnicalBackend.Migrations
                             IsManager = true,
                             LastName = "Doe",
                             ManagerId = 2,
-                            Salary = 20m
+                            Salary = 8.63m
                         },
                         new
                         {
@@ -137,7 +134,7 @@ namespace ConsidTechnicalBackend.Migrations
                             IsManager = false,
                             LastName = "Andersson",
                             ManagerId = 2,
-                            Salary = 12m
+                            Salary = 5.63m
                         },
                         new
                         {
@@ -147,7 +144,7 @@ namespace ConsidTechnicalBackend.Migrations
                             IsManager = false,
                             LastName = "Swan",
                             ManagerId = 2,
-                            Salary = 15m
+                            Salary = 1.125m
                         });
                 });
 
