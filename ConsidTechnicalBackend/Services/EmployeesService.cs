@@ -44,30 +44,33 @@ public class EmployeesService : IEmployeesService
     }
     public async Task DeleteEmployeeAsync(int employeeId)
     {
-        var employeeToDelete = await _employeesRepository.GetById(employeeId);
-
-        if (employeeToDelete == null)
-        {
-            throw new Exception("Employee not found");
-        
-        }
-        
-        if (employeeToDelete.IsManager || employeeToDelete.IsCEO)
-        {
-            if(await _employeesRepository.IsManaging(employeeId))
-            {
-                throw new Exception("Can not delete if managing others");
-            }
-        }
-
         try
         {
+            var employeeToDelete = await _employeesRepository.GetById(employeeId);
+
+            if (employeeToDelete == null)
+            {
+                throw new Exception("Employee not found");
+
+            }
+
+            if (employeeToDelete.IsManager || employeeToDelete.IsCEO)
+            {
+                if (await _employeesRepository.IsManaging(employeeId))
+                {
+                    throw new Exception("Can not delete if managing others");
+                }
+            }
             await _employeesRepository.Delete(employeeToDelete);
         }
-        catch (Exception)
+        catch (System.Data.DataException)
         {
 
             throw new System.Data.DataException("Error occured while accessing the database");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
         }
 
     }
@@ -127,8 +130,6 @@ public class EmployeesService : IEmployeesService
         try
         {
             var employees = await _employeesRepository.GetAll();
-
-            var roles = Enum.GetNames(typeof(Roles));
 
             var ceoEmployees = employees.Where(x => x.IsCEO).Select(x => new Employee
             {
@@ -194,46 +195,59 @@ public class EmployeesService : IEmployeesService
     }
     private async Task ValidateEmployee(bool isCEO, bool isManager, int? managerId)
     {
-        // Check the criterias for management
-        if (isCEO)
+        try
         {
-            if (await _employeesRepository.CEOExists())
-                throw new Exception("CEO already exists");
-
-            if (isManager)
-                throw new Exception("CEO cannot be a manager.");
-
-            if (managerId.HasValue)
-                throw new Exception("CEO cannot have a manager.");
-
-        }
-        else if (isManager)
-        {
-            if (managerId != null || managerId != 0)
+            // Check the criterias for management
+            if (isCEO)
             {
-                var manager = await _employeesRepository.GetById(managerId.Value);
+                if (await _employeesRepository.CEOExists())
+                    throw new Exception("CEO already exists");
 
-                if (manager == null || !manager.IsManager || !manager.IsCEO)
-                    throw new Exception("Manager must have a valid manager/ CEO.");
+                if (isManager)
+                    throw new Exception("CEO cannot be a manager.");
+
+                if (managerId.HasValue)
+                    throw new Exception("CEO cannot have a manager.");
+
             }
-        }
-        else
-        {
-            if (managerId != null && managerId != 0)
+            else if (isManager)
             {
-                var manager = await _employeesRepository.GetById(managerId.Value);
-
-                if (manager == null || !manager.IsManager)
+                if (managerId != null && managerId != 0)
                 {
-                    if (manager.IsCEO)
+                    var manager = await _employeesRepository.GetById(managerId.Value);
+
+                    if (manager == null && !manager.IsManager && !manager.IsCEO) 
+                        throw new Exception("Manager must have a valid manager/ CEO.");
+                }
+            }
+            else
+            {
+                if (managerId != null && managerId != 0)
+                {
+                    var manager = await _employeesRepository.GetById(managerId.Value);
+
+                    if (manager == null && !manager.IsManager)
                     {
-                        throw new Exception("Employee cannot have CEO as manager.");
+                        if (manager.IsCEO)
+                        {
+                            throw new Exception("Employee cannot have CEO as manager.");
+                        }
+
+                        throw new Exception("Employee must have a valid manager.");
                     }
 
-                    throw new Exception("Employee must have a valid manager.");
                 }
-
             }
         }
+        catch (System.Data.DataException)
+        {
+
+            throw new System.Data.DataException("Error occured while accessing the database");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+
     }
 }

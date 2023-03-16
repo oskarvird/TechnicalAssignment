@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -24,10 +25,7 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //builder.Services.AddAutoMapper(typeof(<name-of-profile>));
-
-//builder.Services.AddDbContext<ConsidContext>(
-//            options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); 
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ILibraryItemService, LibraryItemService>();
@@ -48,8 +46,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
